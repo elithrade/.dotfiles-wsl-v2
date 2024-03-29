@@ -40,3 +40,6 @@
     - command: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
       stdin: true
       stdout: true
+    - command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+      stdin: true
+      stdout: true
