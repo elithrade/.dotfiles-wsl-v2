@@ -10,6 +10,7 @@
     ~/.zshrc: zshrc
     ~/.aliases.sh: aliases.sh
     ~/.history.zsh: history.zsh
+    ~/.tmux.conf: tmux.conf
 
 - shell:
     - git submodule update --init --recursive
@@ -41,5 +42,8 @@
       stdin: true
       stdout: true
     - command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+      stdin: true
+      stdout: true
+    - command: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
       stdin: true
       stdout: true
