@@ -14,6 +14,7 @@
 
 - shell:
     - git submodule update --init --recursive
+    # Install latest Neovim
     - command: sudo add-apt-repository ppa:neovim-ppa/unstable -y
       stdin: true
       stdout: true
@@ -26,24 +27,31 @@
     - command: sudo apt install make cmake gcc ripgrep unzip neovim
       stdin: true
       stdout: true
+    # Neovim configs
     - command: git clone git@github.com:elithrade/nvim-lazy.git ~/.config/nvim
       stdin: true
       stdout: true
+    # zsh plugin manager
     - command: curl -L git.io/antigen > ~/antigen.zsh
       stdin: true
       stdout: true
+    # Shell prompt
     - command: curl -sS https://starship.rs/install.sh | sh
       stdin: true
       stdout: true
+    # Install nvm
     - command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash
       stdin: true
       stdout: true
+    # Install fzf
     - command: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
       stdin: true
       stdout: true
+    # Better cd
     - command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
       stdin: true
       stdout: true
+    # Tmux plugin manager
     - command: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
       stdin: true
       stdout: true
