@@ -43,3 +43,9 @@ alias nrc="npm run commit"
 alias sau="sudo apt update"
 alias sauu="sudo apt upgrade"
 alias sai="sudo apt install"
+
+# Tmux
+alias t="env TERM=xterm-256color tmux"
+alias e="exit"
+alias ta="t attach"
+alias tl="tmux ls"
