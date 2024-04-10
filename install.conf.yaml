@@ -24,7 +24,7 @@
     - command: sudo apt upgrade
       stdin: true
       stdout: true
-    - command: sudo apt install make cmake gcc ripgrep unzip neovim
+    - command: sudo apt install make cmake gcc ripgrep unzip xclip neovim
       stdin: true
       stdout: true
     # Neovim configs
