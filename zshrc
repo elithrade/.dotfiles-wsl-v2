@@ -46,3 +46,6 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # Install zoxide, a smarter cd command
 eval "$(zoxide init zsh)"
+
+# Turn off all beeps
+unsetopt BEEP
