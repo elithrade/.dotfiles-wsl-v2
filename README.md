@@ -2,7 +2,7 @@
 
 This repo contains config files for my WSL environment.
 
-All Neovim configs are not managed by [nvim-lazy](https://github.com/elithrade/nvim-lazy).
+All Neovim configs are now managed by [nvim-lazy](https://github.com/elithrade/nvim-lazy).
 
 ## Installation
 
