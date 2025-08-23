@@ -4,6 +4,12 @@ source ~/antigen.zsh
 # Doing initialization at the plugin sourcing (Instantly)
 ZVM_INIT_MODE=sourcing
 
+# Define what to do after zsh-vi-mode initializes
+function zvm_after_init() {
+  # Initialize starship prompt
+  eval "$(starship init zsh)"
+}
+
 antigen use oh-my-zsh
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle jump
@@ -15,9 +21,6 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen apply
 
 source ~/.history.zsh
-
-# Initialize starship prompt
-eval "$(starship init zsh)"
 
 # Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
 export KEYTIMEOUT=1
