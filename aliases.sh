@@ -27,6 +27,8 @@ alias la="ls -o -AhX --group-directories-first"
 alias v="nvim"
 alias zh="nvim ~/.zsh_history"
 alias dot="cd ~/.dotfiles-wsl-v2"
+alias cv="cd ~/.config/nvim/ && nvim"
+alias cz="cd ~/ && nvim .zshrc"
 
 # Npm
 alias ni="npm install"
