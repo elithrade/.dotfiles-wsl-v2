@@ -1,0 +1,13 @@
+# antidote plugins, loaded in order by `antidote load`
+
+# Run compinit once, after all plugins have added their completions
+mattmc3/ez-compinit
+
+# oh-my-zsh core settings (completion styles, key bindings, dir options), replaces `antigen use oh-my-zsh`
+ohmyzsh/ohmyzsh path:lib
+
+jeffreytse/zsh-vi-mode
+zsh-users/zsh-autosuggestions
+
+# Syntax highlighting must be loaded last
+zsh-users/zsh-syntax-highlighting
