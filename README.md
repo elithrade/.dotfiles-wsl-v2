@@ -90,6 +90,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 | `install.conf.yaml` | | Installer steps |
 | `windows-terminal/dotfiles-wsl.json` | Windows Terminal `Fragments\dotfiles-wsl\` | WSL profile and colour scheme |
 | `install.bob`, `install.lazygit`, `install.gh`, `install.wt` | | Helper install scripts |
+| `install.clone` | | Clones a repo, re-cloning one left incomplete by a failed run |
 | `install.nvim.lua` | | Headless Neovim setup |
 
 Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. Checking out another branch changes the live config of every new shell, see [Testing changes](#testing-changes-safely).

@@ -42,7 +42,7 @@
       stdin: true
       stdout: true
     # zsh plugin manager
-    - command: "[ -d ~/.antidote ] || git clone --depth=1 https://github.com/mattmc3/antidote.git ~/.antidote"
+    - command: ./install.clone https://github.com/mattmc3/antidote.git ~/.antidote antidote.zsh --depth=1
       stdin: true
       stdout: true
     # Shell prompt
@@ -50,14 +50,14 @@
       stdin: true
       stdout: true
     # Node version manager
-    - command: "[ -d ~/.local/share/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
+    - command: "[ -x ~/.local/share/fnm/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
       stdin: true
       stdout: true
     - command: ~/.local/share/fnm/fnm install --lts && ~/.local/share/fnm/fnm default lts-latest
       stdin: true
       stdout: true
     # Install fzf
-    - command: "[ -d ~/.fzf ] || (git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all)"
+    - command: "[ -x ~/.fzf/bin/fzf ] || (./install.clone https://github.com/junegunn/fzf.git ~/.fzf install --depth 1 && ~/.fzf/install --all)"
       stdin: true
       stdout: true
     # Better cd
@@ -84,7 +84,7 @@
       stdin: true
       stdout: true
     # Tmux plugin manager
-    - command: "[ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
+    - command: ./install.clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm bin/install_plugins
       stdin: true
       stdout: true
     # Tmux plugins listed in tmux.conf (same as prefix + I)
@@ -92,7 +92,7 @@
       stdin: true
       stdout: true
     # Neovim configs (clone over https, push over ssh)
-    - command: "[ -d ~/.config/nvim ] || (git clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git)"
+    - command: ./install.clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim init.lua && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git
       stdin: true
       stdout: true
     # LazyVim plugins, Mason tools and treesitter parsers, so the first nvim launch is ready to use

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Clone a repo, unless a complete clone is already there.
+# Usage: install.clone <url> <dir> <marker-file> [git clone options...]
+#
+# The clone counts as complete when <dir>/<marker-file> exists. Anything else
+# left in <dir> (e.g. from an interrupted clone) is moved aside, then cloned again.
+
+set -e
+
+URL="$1"
+DIR="$2"
+MARKER="$3"
+shift 3
+
+if [ -e "${DIR}/${MARKER}" ]; then
+  exit 0
+fi
+
+if [ -e "${DIR}" ]; then
+  BACKUP="${DIR}.bak.$(date +%Y%m%d%H%M%S)"
+  echo "${DIR} is incomplete, moving it to ${BACKUP}"
+  mv "${DIR}" "${BACKUP}"
+fi
+
+mkdir -p "$(dirname "${DIR}")"
+git clone "$@" "${URL}" "${DIR}"
