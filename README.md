@@ -90,7 +90,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 | `install.conf.yaml` | | Installer steps |
 | `windows-terminal/dotfiles-wsl.json` | Windows Terminal `Fragments\dotfiles-wsl\` | WSL profile and colour scheme |
 | `install.bob`, `install.lazygit`, `install.gh`, `install.wt` | | Helper install scripts |
-| `install.clone` | | Clones a repo, re-cloning one left incomplete by a failed run |
+| `install.clone` | | Clones a repo. Re-clones (after moving the folder aside) one left incomplete by a failed run or cloned from a different repo. https and ssh URLs of the same repo count as the same |
 | `install.nvim.lua` | | Headless Neovim setup |
 
 Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. Checking out another branch changes the live config of every new shell, see [Testing changes](#testing-changes-safely).
@@ -152,4 +152,5 @@ HOME=$T zsh -i
 - **Mason LSP servers missing after a headless install**: mason-lspconfig skips installs in headless mode, `install.nvim.lua` works around it. Opening nvim normally also installs anything missing.
 - **`git status` in `~/.config/nvim` shows `lazy-lock.json` modified on a new machine**: either the lockfile on GitHub is out of date (commit and push it from the machine where plugins were last updated), or plugins from another nvim config were left in `~/.local/share/nvim/lazy`. lazy.nvim writes the checked-out commit of every installed plugin into the lockfile after it installs anything, so leftovers get pinned. `./install` moves `~/.local/share/nvim`, `~/.local/state/nvim` and `~/.cache/nvim` aside when `~/.config/nvim` isn't nvim-lazy-v2. To recover by hand: `git -C ~/.config/nvim checkout lazy-lock.json`, remove those three folders, run `./install` again.
 - **`module 'mason-lspconfig.mappings' not found` when nvim starts**: Mason plugins on v1 (from an older config) under LazyVim 16, which needs v2. Same cause and fix as the lockfile entry above.
+- **`Could not get the latest lazygit version from api.github.com`**: the GitHub API is blocked (work proxy) or rate limited for anonymous requests (60 an hour). Wait an hour, or fix network access to `api.github.com`, then run `./install` again.
 - **`./install` hangs in the Neovim step**: a Lua error in `nvim --headless -c "luafile ..."` doesn't exit nvim, so an error looks like a hang. `install.nvim.lua` catches errors, prints `install failed: <traceback>` and exits non-zero. If it still stalls, the last `lazy:` / `mason:` / `treesitter:` line shows the step, and `ps -ef --forest | grep -A5 '[n]vim --headless'` shows what it waits on.
