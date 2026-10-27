@@ -73,6 +73,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - csharpier as a global dotnet tool (used by conform.nvim for C# formatting)
 - Neovim via bob, antidote, starship, fnm + latest Node LTS, fzf, zoxide, lazygit
 - GitHub CLI (from GitHub's apt repository), Claude Code and GitHub Copilot CLI
+- Docker Engine with buildx and compose (from Docker's apt repository, inside WSL, no Docker Desktop), service enabled, user added to the `docker` group
 - Windows Terminal fragment (see [Windows Terminal](#windows-terminal))
 - tpm and the tmux plugins listed in `tmux.conf`
 - Neovim config (plugin data from a different nvim config is moved aside first), then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
@@ -89,7 +90,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 | `starship.toml` | `~/.config/starship.toml` | Prompt config |
 | `install.conf.yaml` | | Installer steps |
 | `windows-terminal/dotfiles-wsl.json` | Windows Terminal `Fragments\dotfiles-wsl\` | WSL profile and colour scheme |
-| `install.bob`, `install.lazygit`, `install.gh`, `install.wt` | | Helper install scripts |
+| `install.bob`, `install.lazygit`, `install.gh`, `install.docker`, `install.wt` | | Helper install scripts |
 | `install.clone` | | Clones a repo. Re-clones (after moving the folder aside) one left incomplete by a failed run or cloned from a different repo. https and ssh URLs of the same repo count as the same |
 | `install.nvim.lua` | | Headless Neovim setup |
 

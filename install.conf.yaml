@@ -72,6 +72,10 @@
     - command: ./install.gh
       stdin: true
       stdout: true
+    # Docker Engine inside WSL
+    - command: ./install.docker
+      stdin: true
+      stdout: true
     # Windows Terminal profile and colour scheme
     - command: ./install.wt
       stdin: true

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Install Docker Engine from Docker's own apt repository, running inside WSL (no Docker Desktop)
+
+set -e
+
+if command -v docker >/dev/null 2>&1; then
+  echo "docker already installed: $(docker --version)"
+else
+  KEYRING="/etc/apt/keyrings/docker.asc"
+
+  sudo mkdir -p -m 755 /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee "${KEYRING}" >/dev/null
+  sudo chmod go+r "${KEYRING}"
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEYRING}] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+fi
+
+# Start with the distro (needs systemd=true in /etc/wsl.conf)
+sudo systemctl enable --now docker
+
+# Run docker without sudo, takes effect in new shells
+if ! id -nG "${USER}" | grep -qw docker; then
+  sudo usermod -aG docker "${USER}"
+  echo "Added ${USER} to the docker group, open a new terminal to use docker without sudo"
+fi
