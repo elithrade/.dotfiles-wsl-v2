@@ -22,7 +22,7 @@
     - command: sudo apt upgrade -y
       stdin: true
       stdout: true
-    - command: sudo apt install -y make cmake gcc ripgrep unzip xclip
+    - command: sudo apt install -y make cmake gcc ripgrep unzip xclip chafa
       stdin: true
       stdout: true
     # Neovim via bob (version manager)
