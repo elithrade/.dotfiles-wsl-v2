@@ -3,24 +3,33 @@
 
 local function log(msg)
   io.stdout:write(msg .. "\n")
+  io.stdout:flush()
 end
 
 local timeout = 30 * 60 * 1000
 
 -- Plugins, pinned to lazy-lock.json
+log("lazy: restoring plugins")
 vim.cmd("Lazy! restore")
 
 -- Loading these runs LazyVim's own config, which starts installing every tool in its ensure_installed lists
 require("lazy").load({ plugins = { "mason.nvim", "mason-lspconfig.nvim", "nvim-lspconfig", "mason-nvim-dap.nvim" } })
 
 local mr = require("mason-registry")
+log("mason: refreshing registry")
 local refreshed = false
 mr.refresh(function()
   refreshed = true
 end)
-vim.wait(timeout, function()
+-- The registry is a small download, if it takes this long the network is blocking it
+if not vim.wait(2 * 60 * 1000, function()
   return refreshed
-end, 200)
+end, 200) then
+  log("mason: registry refresh timed out, check network access to github.com")
+  vim.cmd("cq")
+end
+
+log("mason: installing tools")
 
 -- mason-lspconfig skips its ensure_installed in headless mode, so run it ourselves
 require("mason-lspconfig.features.ensure_installed")()
@@ -53,6 +62,7 @@ end, 500)
 log("mason installed: " .. table.concat(mr.get_installed_package_names(), ", "))
 
 -- Treesitter parsers, built with the tree-sitter CLI that Mason just installed
+log("treesitter: installing parsers")
 require("lazy").load({ plugins = { "nvim-treesitter" } })
 local parsers = LazyVim.opts("nvim-treesitter").ensure_installed or {}
 require("nvim-treesitter").install(parsers, { summary = true }):wait(timeout)
