@@ -30,8 +30,9 @@ Neovim configs live in a separate repo, [nvim-lazy-v2](https://github.com/elithr
 4. Open a new terminal. If zsh shows its first-run menu, press `q`.
 
 5. Manual steps the installer can't do:
-   - SSH key for GitHub: `ssh-keygen -t ed25519`, then add `~/.ssh/id_ed25519.pub` to GitHub
-   - `gh auth login`, if using the GitHub CLI (install it first, it is not part of `./install`)
+   - SSH key for GitHub: `ssh-keygen -t ed25519` and add `~/.ssh/id_ed25519.pub` to GitHub, or copy `~/.ssh` from another distro:
+     `tar -C ~ -cf - .ssh | wsl.exe -d <new-distro> -u <user> -- tar -C /home/<user> -xf -` (run in the old distro), then `chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_ed25519` in the new one
+   - Sign in once: `gh auth login`, `claude` (follow the prompt), `copilot` then `/login`
 
 `./install` is safe to re-run at any time. Already installed tools and existing clones are skipped, so re-running after pulling changes only applies what is new.
 
@@ -44,6 +45,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - apt: build tools, ripgrep, fd, unzip, xclip, chafa, .NET 10 SDK, then `fd` → `fdfind` link
 - csharpier as a global dotnet tool (used by conform.nvim for C# formatting)
 - Neovim via bob, antidote, starship, fnm + latest Node LTS, fzf, zoxide, lazygit
+- GitHub CLI (from GitHub's apt repository), Claude Code and GitHub Copilot CLI
 - tpm and the tmux plugins listed in `tmux.conf`
 - Neovim config, then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
 
@@ -58,7 +60,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 | `tmux.conf` | `~/.tmux.conf` | tmux config and plugins |
 | `starship.toml` | `~/.config/starship.toml` | Prompt config |
 | `install.conf.yaml` | | Installer steps |
-| `install.bob`, `install.lazygit` | | Helper install scripts |
+| `install.bob`, `install.lazygit`, `install.gh` | | Helper install scripts |
 | `install.nvim.lua` | | Headless Neovim setup |
 
 Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. Checking out another branch changes the live config of every new shell, see [Testing changes](#testing-changes-safely).

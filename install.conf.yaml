@@ -68,6 +68,17 @@
     - command: ./install.lazygit
       stdin: true
       stdout: true
+    # GitHub CLI
+    - command: ./install.gh
+      stdin: true
+      stdout: true
+    # AI coding CLIs, both install into ~/.local/bin
+    - command: "[ -x ~/.local/bin/claude ] || curl -fsSL https://claude.ai/install.sh | bash"
+      stdin: true
+      stdout: true
+    - command: "[ -x ~/.local/bin/copilot ] || curl -fsSL https://gh.io/copilot-install | bash"
+      stdin: true
+      stdout: true
     # Tmux plugin manager
     - command: "[ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
       stdin: true
