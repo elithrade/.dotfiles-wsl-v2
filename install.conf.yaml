@@ -29,8 +29,12 @@
     - command: ./install.bob
       stdin: true
       stdout: true
-    # Neovim configs
-    - command: "[ -d ~/.config/nvim ] || git clone https://github.com/elithrade/nvim-lazy.git ~/.config/nvim"
+    # Neovim configs (clone over https, push over ssh)
+    - command: "[ -d ~/.config/nvim ] || (git clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git)"
+      stdin: true
+      stdout: true
+    # Install LazyVim plugins, so the first nvim launch is ready to use
+    - command: ~/.local/share/bob/nvim-bin/nvim --headless "+Lazy! restore" +qa
       stdin: true
       stdout: true
     # zsh plugin manager
