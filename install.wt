@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Install the Windows Terminal fragment (WSL profile and colour scheme), it layers on top of
+# each machine's own settings.json without changing it
+
+set -e
+
+if ! command -v powershell.exe >/dev/null 2>&1; then
+  echo "Windows interop not available, skipping Windows Terminal fragment"
+  exit 0
+fi
+
+LOCALAPPDATA_WIN="$(powershell.exe -NoProfile -Command '$env:LOCALAPPDATA' | tr -d '\r')"
+FRAGMENT_DIR="$(wslpath "${LOCALAPPDATA_WIN}")/Microsoft/Windows Terminal/Fragments/dotfiles-wsl"
+SOURCE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/windows-terminal/dotfiles-wsl.json"
+
+mkdir -p "${FRAGMENT_DIR}"
+cp "${SOURCE}" "${FRAGMENT_DIR}/dotfiles-wsl.json"
+echo "Windows Terminal fragment installed to ${FRAGMENT_DIR}, restart Windows Terminal to load it"

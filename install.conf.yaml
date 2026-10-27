@@ -8,50 +8,98 @@
 
 - link:
     ~/.zshrc: zshrc
+    ~/.zsh_plugins.txt: zsh_plugins.txt
     ~/.aliases.sh: aliases.sh
     ~/.history.zsh: history.zsh
     ~/.tmux.conf: tmux.conf
+    ~/.config/starship.toml: starship.toml
 
 - shell:
     - git submodule update --init --recursive
-    # Install latest Neovim
-    - command: sudo add-apt-repository ppa:neovim-ppa/unstable -y
-      stdin: true
-      stdout: true
+    # Git identity and defaults, only set when missing so per-machine changes are kept
+    - git config --global user.name >/dev/null || git config --global user.name "Bin Hu"
+    - git config --global user.email >/dev/null || git config --global user.email "elithrade@gmail.com"
+    - git config --global init.defaultBranch >/dev/null || git config --global init.defaultBranch main
     - command: sudo apt update
       stdin: true
       stdout: true
-    - command: sudo apt upgrade
+    - command: sudo apt upgrade -y
       stdin: true
       stdout: true
-    - command: sudo apt install make cmake gcc ripgrep unzip xclip neovim
+    - command: sudo apt install -y make cmake gcc ripgrep fd-find unzip xclip chafa dotnet-sdk-10.0
       stdin: true
       stdout: true
-    # Neovim configs
-    - command: git clone git@github.com:elithrade/nvim-lazy.git ~/.config/nvim
+    # Ubuntu names the fd binary fdfind
+    - command: mkdir -p ~/.local/bin && ln -sf /usr/bin/fdfind ~/.local/bin/fd
+      stdin: true
+      stdout: true
+    # C# formatter, used by conform.nvim from ~/.dotnet/tools
+    - command: dotnet tool list -g | grep -q "^csharpier " || dotnet tool install -g csharpier
+      stdin: true
+      stdout: true
+    # Neovim via bob (version manager)
+    - command: ./install.bob
       stdin: true
       stdout: true
     # zsh plugin manager
-    - command: curl -L git.io/antigen > ~/antigen.zsh
+    - command: ./install.clone https://github.com/mattmc3/antidote.git ~/.antidote antidote.zsh --depth=1
       stdin: true
       stdout: true
     # Shell prompt
-    - command: curl -sS https://starship.rs/install.sh | sh
+    - command: command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
       stdin: true
       stdout: true
-    # Install nvm
-    - command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash
+    # Node version manager
+    - command: "[ -x ~/.local/share/fnm/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
+      stdin: true
+      stdout: true
+    - command: ~/.local/share/fnm/fnm install --lts && ~/.local/share/fnm/fnm default lts-latest
       stdin: true
       stdout: true
     # Install fzf
-    - command: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
+    - command: "[ -x ~/.fzf/bin/fzf ] || (./install.clone https://github.com/junegunn/fzf.git ~/.fzf install --depth 1 && ~/.fzf/install --all)"
       stdin: true
       stdout: true
     # Better cd
-    - command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+    - command: command -v zoxide >/dev/null || curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+      stdin: true
+      stdout: true
+    # Git TUI
+    - command: ./install.lazygit
+      stdin: true
+      stdout: true
+    # GitHub CLI
+    - command: ./install.gh
+      stdin: true
+      stdout: true
+    # Windows Terminal profile and colour scheme
+    - command: ./install.wt
+      stdin: true
+      stdout: true
+    # AI coding CLIs, both install into ~/.local/bin
+    - command: "[ -x ~/.local/bin/claude ] || curl -fsSL https://claude.ai/install.sh | bash"
+      stdin: true
+      stdout: true
+    - command: "[ -x ~/.local/bin/copilot ] || curl -fsSL https://gh.io/copilot-install | bash"
       stdin: true
       stdout: true
     # Tmux plugin manager
-    - command: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    - command: ./install.clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm bin/install_plugins
+      stdin: true
+      stdout: true
+    # Tmux plugins listed in tmux.conf (same as prefix + I)
+    - command: ~/.tmux/plugins/tpm/bin/install_plugins
+      stdin: true
+      stdout: true
+    # Plugin data from another nvim config would be written into this config's lazy-lock.json, so move it aside first
+    - command: '[ "$(git -C ~/.config/nvim remote get-url origin 2>/dev/null)" = https://github.com/elithrade/nvim-lazy-v2.git ] || for d in ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim; do if [ -e "$d" ]; then echo "moving $d to $d.bak.$(date +%Y%m%d%H%M%S)"; mv "$d" "$d.bak.$(date +%Y%m%d%H%M%S)"; fi; done'
+      stdin: true
+      stdout: true
+    # Neovim configs (clone over https, push over ssh)
+    - command: ./install.clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim init.lua && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git
+      stdin: true
+      stdout: true
+    # LazyVim plugins, Mason tools and treesitter parsers, so the first nvim launch is ready to use
+    - command: export PATH="$HOME/.local/bin:$PATH" && eval "$(~/.local/share/fnm/fnm env --shell bash)" && ~/.local/share/bob/nvim-bin/nvim --headless -c "luafile install.nvim.lua"
       stdin: true
       stdout: true

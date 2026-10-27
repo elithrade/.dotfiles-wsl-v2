@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Install the GitHub CLI from GitHub's own apt repository (newer than Ubuntu's package)
+
+set -e
+
+if command -v gh >/dev/null 2>&1; then
+  echo "gh already installed: $(gh --version | head -1)"
+  exit 0
+fi
+
+KEYRING="/etc/apt/keyrings/githubcli-archive-keyring.gpg"
+
+sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee "${KEYRING}" >/dev/null
+sudo chmod go+r "${KEYRING}"
+echo "deb [arch=$(dpkg --print-architecture) signed-by=${KEYRING}] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+sudo apt update
+sudo apt install -y gh
