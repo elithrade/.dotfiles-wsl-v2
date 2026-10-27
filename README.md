@@ -9,7 +9,7 @@ All Neovim configs are now managed by [nvim-lazy](https://github.com/elithrade/n
 - Install `zsh` via `sudo apt install zsh && chsh -s $(which zsh)`
 - Clone the repo and `cd ~/.dotfiles-wsl-v2/`
 - `./install` (safe to re-run, already installed tools are skipped)
-- Ensure `tmux` plugins are installed by `prefix + shift + i`
+- `tmux` plugins are installed by `./install` (or manually with `prefix + shift + i`)
 - `fnm install --lts` to install the latest node LTS
 - `fnm default lts-latest`
 - Restart WSL
