@@ -57,3 +57,6 @@ eval "$(zoxide init zsh)"
 
 # Turn off all beeps
 unsetopt BEEP
+
+# Machine-specific settings (e.g. work proxy, company tools), not tracked in this repo
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local

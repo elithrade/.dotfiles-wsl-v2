@@ -37,6 +37,32 @@ Neovim configs live in a separate repo, [nvim-lazy-v2](https://github.com/elithr
 
 `./install` is safe to re-run at any time. Already installed tools and existing clones are skipped, so re-running after pulling changes only applies what is new.
 
+## Work machine
+
+Same steps as [a new machine](#set-up-a-new-machine), in a fresh distro next to the existing work one (which stays untouched), with these differences:
+
+- **Set the work git identity before `./install`**, otherwise it sets the personal email (it only fills in missing values):
+
+  ```sh
+  git config --global user.name "Bin Hu"
+  git config --global user.email "<work email>"
+  ```
+
+- **Copy `~/.ssh` from the existing work distro** instead of creating a new key (run in the old distro, then fix permissions in the new one):
+
+  ```sh
+  tar -C ~ -cf - .ssh | wsl.exe -d Ubuntu-26.04 -u <user> -- tar -C /home/<user> -xf -
+  chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_*   # in the new distro, .pub files stay readable
+  ```
+
+  Other folders worth copying the same way: `~/.config/gh`, `~/.aws`, `~/.docker`, `~/.zsh_history`.
+
+- **.NET**: work uses asdf to manage .NET versions. `./install` also installs `dotnet-sdk-10.0` from apt, which is used until asdf is set up. The nvim config (`csharp.lua`) prefers the asdf install when `~/.asdf/installs/dotnet-core/<version>` exists.
+- **Corporate proxy / TLS inspection**: the `curl` based installers (starship, fnm, zoxide, Claude Code, Copilot CLI) may fail. Set the proxy (e.g. `export https_proxy=...`) and re-run `./install`, steps that already succeeded are skipped.
+- **Distro name**: the Windows Terminal profile starts `Ubuntu-26.04`. If the work distro is named differently (`wsl -l -v`), change the `-d` name in `windows-terminal/dotfiles-wsl.json` and re-run `./install.wt`.
+- **Font**: install JetBrainsMono Nerd Font on the work laptop's Windows side too.
+- **Work-only shell settings** (proxy, company tools, extra PATH entries) shouldn't go in this repo. Put them in `~/.zshrc.local`, which `zshrc` sources at the end when it exists.
+
 ## What `./install` does
 
 Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/dotbot):
