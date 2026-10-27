@@ -75,7 +75,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - GitHub CLI (from GitHub's apt repository), Claude Code and GitHub Copilot CLI
 - Windows Terminal fragment (see [Windows Terminal](#windows-terminal))
 - tpm and the tmux plugins listed in `tmux.conf`
-- Neovim config, then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
+- Neovim config (plugin data from a different nvim config is moved aside first), then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
 
 ## Files
 
@@ -150,4 +150,6 @@ HOME=$T zsh -i
 - **tmux prefix seems dead, no `^SPACE` in the status bar, `prefix -` / `prefix \` do nothing**: the tmux plugins are not installed. Run `prefix + I` or `~/.tmux/plugins/tpm/bin/install_plugins`. To check whether the prefix itself arrives, run `tmux list-clients -F '#{client_prefix}'` right after pressing it (1 means received).
 - **`command not found` errors from `antidote` in new shells**: the branch checked out needs `./install` to be run first (switching branches doesn't install anything).
 - **Mason LSP servers missing after a headless install**: mason-lspconfig skips installs in headless mode, `install.nvim.lua` works around it. Opening nvim normally also installs anything missing.
-- **`git status` in `~/.config/nvim` shows `lazy-lock.json` modified on a new machine**: the lockfile on GitHub is out of date, commit and push it from the machine where plugins were last updated.
+- **`git status` in `~/.config/nvim` shows `lazy-lock.json` modified on a new machine**: either the lockfile on GitHub is out of date (commit and push it from the machine where plugins were last updated), or plugins from another nvim config were left in `~/.local/share/nvim/lazy`. lazy.nvim writes the checked-out commit of every installed plugin into the lockfile after it installs anything, so leftovers get pinned. `./install` moves `~/.local/share/nvim`, `~/.local/state/nvim` and `~/.cache/nvim` aside when `~/.config/nvim` isn't nvim-lazy-v2. To recover by hand: `git -C ~/.config/nvim checkout lazy-lock.json`, remove those three folders, run `./install` again.
+- **`module 'mason-lspconfig.mappings' not found` when nvim starts**: Mason plugins on v1 (from an older config) under LazyVim 16, which needs v2. Same cause and fix as the lockfile entry above.
+- **`./install` hangs in the Neovim step**: a Lua error in `nvim --headless -c "luafile ..."` doesn't exit nvim, so an error looks like a hang. `install.nvim.lua` catches errors, prints `install failed: <traceback>` and exits non-zero. If it still stalls, the last `lazy:` / `mason:` / `treesitter:` line shows the step, and `ps -ef --forest | grep -A5 '[n]vim --headless'` shows what it waits on.
