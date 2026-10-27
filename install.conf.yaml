@@ -12,6 +12,7 @@
     ~/.aliases.sh: aliases.sh
     ~/.history.zsh: history.zsh
     ~/.tmux.conf: tmux.conf
+    ~/.config/starship.toml: starship.toml
 
 - shell:
     - git submodule update --init --recursive

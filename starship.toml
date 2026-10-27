@@ -1,0 +1,2 @@
+# Directory scans on /mnt/c (Windows drives) are slow, the default 30ms times out and prints warnings
+scan_timeout = 100

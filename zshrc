@@ -11,6 +11,9 @@ path=(
   $HOME/.dotnet/tools
 )
 
+# WSL opens shells in the Windows home folder (e.g. /mnt/c/Users/hub), start in the Linux home instead
+[[ $PWD =~ '^/mnt/[a-z]/Users/[^/]+$' ]] && cd ~
+
 # https://github.com/jeffreytse/zsh-vi-mode/issues/24#issuecomment-873029329
 # Doing initialization at the plugin sourcing (Instantly)
 ZVM_INIT_MODE=sourcing
