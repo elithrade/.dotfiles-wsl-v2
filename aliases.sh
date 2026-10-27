@@ -20,6 +20,7 @@ alias ga="git add $1"
 alias gss="git stash save"
 alias gsp="git stash pop"
 alias gpof="git push origin $1 --force-with-lease"
+alias lg="lazygit"
 
 # Files
 alias l="ls -o -hX --group-directories-first"
@@ -51,3 +52,7 @@ alias t="env TERM=xterm-256color tmux"
 alias e="exit"
 alias ta="t attach"
 alias tl="tmux ls"
+
+# AI
+alias cpl="copilot"
+alias cld="claude"
