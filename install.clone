@@ -14,7 +14,12 @@ DIR="$2"
 MARKER="$3"
 shift 3
 
-if [ -e "${DIR}/${MARKER}" ] && [ "$(git -C "${DIR}" remote get-url origin 2>/dev/null)" = "${URL}" ]; then
+# owner/repo, so https and ssh URLs of the same repo match
+repo_id() {
+  echo "$1" | sed -E 's#^([a-z+]+://([^@/]+@)?[^/]+/|[^@/]+@[^:]+:)##; s#\.git$##'
+}
+
+if [ -e "${DIR}/${MARKER}" ] && [ "$(repo_id "$(git -C "${DIR}" remote get-url origin 2>/dev/null)")" = "$(repo_id "${URL}")" ]; then
   exit 0
 fi
 

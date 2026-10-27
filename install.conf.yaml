@@ -92,7 +92,7 @@
       stdin: true
       stdout: true
     # Plugin data from another nvim config would be written into this config's lazy-lock.json, so move it aside first
-    - command: '[ "$(git -C ~/.config/nvim remote get-url origin 2>/dev/null)" = https://github.com/elithrade/nvim-lazy-v2.git ] || for d in ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim; do if [ -e "$d" ]; then echo "moving $d to $d.bak.$(date +%Y%m%d%H%M%S)"; mv "$d" "$d.bak.$(date +%Y%m%d%H%M%S)"; fi; done'
+    - command: 'git -C ~/.config/nvim remote get-url origin 2>/dev/null | grep -Eq "[/:]elithrade/nvim-lazy-v2(\.git)?$" || for d in ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim; do if [ -e "$d" ]; then echo "moving $d to $d.bak.$(date +%Y%m%d%H%M%S)"; mv "$d" "$d.bak.$(date +%Y%m%d%H%M%S)"; fi; done'
       stdin: true
       stdout: true
     # Neovim configs (clone over https, push over ssh)
