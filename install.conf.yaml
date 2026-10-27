@@ -29,6 +29,10 @@
     - command: mkdir -p ~/.local/bin && ln -sf /usr/bin/fdfind ~/.local/bin/fd
       stdin: true
       stdout: true
+    # C# formatter, used by conform.nvim from ~/.dotnet/tools
+    - command: dotnet tool list -g | grep -q "^csharpier " || dotnet tool install -g csharpier
+      stdin: true
+      stdout: true
     # Neovim via bob (version manager)
     - command: ./install.bob
       stdin: true
