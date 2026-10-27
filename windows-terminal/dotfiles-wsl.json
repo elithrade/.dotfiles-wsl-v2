@@ -1,0 +1,46 @@
+{
+    "profiles": [
+        {
+            "guid": "{8c84b948-8e56-4bb2-81ca-99503cd875a2}",
+            "name": "Ubuntu 26.04 LTS",
+            "commandline": "wsl.exe -d Ubuntu-26.04 --cd ~",
+            "colorScheme": "Catppuccin Mocha",
+            "font": {
+                "face": "JetBrainsMono Nerd Font",
+                "size": 13
+            },
+            "opacity": 100,
+            "scrollbarState": "hidden",
+            "useAcrylic": false
+        },
+        {
+            "updates": "{f2aa24d4-81ad-59db-aca3-b11aac10fe37}",
+            "hidden": true
+        }
+    ],
+    "schemes": [
+        {
+            "name": "Catppuccin Mocha",
+            "background": "#1E1E2E",
+            "foreground": "#CDD6F4",
+            "cursorColor": "#F5E0DC",
+            "selectionBackground": "#585B70",
+            "black": "#45475A",
+            "red": "#F38BA8",
+            "green": "#A6E3A1",
+            "yellow": "#F9E2AF",
+            "blue": "#89B4FA",
+            "purple": "#F5C2E7",
+            "cyan": "#94E2D5",
+            "white": "#BAC2DE",
+            "brightBlack": "#585B70",
+            "brightRed": "#F38BA8",
+            "brightGreen": "#A6E3A1",
+            "brightYellow": "#F9E2AF",
+            "brightBlue": "#89B4FA",
+            "brightPurple": "#F5C2E7",
+            "brightCyan": "#94E2D5",
+            "brightWhite": "#A6ADC8"
+        }
+    ]
+}

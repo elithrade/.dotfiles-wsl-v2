@@ -33,6 +33,7 @@ Neovim configs live in a separate repo, [nvim-lazy-v2](https://github.com/elithr
    - SSH key for GitHub: `ssh-keygen -t ed25519` and add `~/.ssh/id_ed25519.pub` to GitHub, or copy `~/.ssh` from another distro:
      `tar -C ~ -cf - .ssh | wsl.exe -d <new-distro> -u <user> -- tar -C /home/<user> -xf -` (run in the old distro), then `chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_ed25519` in the new one
    - Sign in once: `gh auth login`, `claude` (follow the prompt), `copilot` then `/login`
+   - Install [JetBrainsMono Nerd Font](https://www.nerdfonts.com/font-downloads) on Windows (unzip, select the `.ttf` files, right click → Install), used by the Windows Terminal profile
 
 `./install` is safe to re-run at any time. Already installed tools and existing clones are skipped, so re-running after pulling changes only applies what is new.
 
@@ -46,6 +47,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - csharpier as a global dotnet tool (used by conform.nvim for C# formatting)
 - Neovim via bob, antidote, starship, fnm + latest Node LTS, fzf, zoxide, lazygit
 - GitHub CLI (from GitHub's apt repository), Claude Code and GitHub Copilot CLI
+- Windows Terminal fragment (see [Windows Terminal](#windows-terminal))
 - tpm and the tmux plugins listed in `tmux.conf`
 - Neovim config, then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
 
@@ -60,7 +62,8 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 | `tmux.conf` | `~/.tmux.conf` | tmux config and plugins |
 | `starship.toml` | `~/.config/starship.toml` | Prompt config |
 | `install.conf.yaml` | | Installer steps |
-| `install.bob`, `install.lazygit`, `install.gh` | | Helper install scripts |
+| `windows-terminal/dotfiles-wsl.json` | Windows Terminal `Fragments\dotfiles-wsl\` | WSL profile and colour scheme |
+| `install.bob`, `install.lazygit`, `install.gh`, `install.wt` | | Helper install scripts |
 | `install.nvim.lua` | | Headless Neovim setup |
 
 Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. Checking out another branch changes the live config of every new shell, see [Testing changes](#testing-changes-safely).
@@ -74,6 +77,18 @@ Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. 
 - Mason tools: add them to `ensure_installed` in the Neovim config, `./install` and LazyVim pick them up from there
 
 tmux prefix is `Ctrl+Space`. Splits: `prefix -` (top/bottom), `prefix \` (side by side, full height), `prefix |` (side by side, current pane).
+
+## Windows Terminal
+
+`windows-terminal/dotfiles-wsl.json` is a [JSON fragment](https://learn.microsoft.com/windows/terminal/json-fragment-extensions): `./install` copies it to `%LOCALAPPDATA%\Microsoft\Windows Terminal\Fragments\dotfiles-wsl\`, and Windows Terminal layers it on top of the machine's own `settings.json`, which stays untouched (other profiles, key bindings and global settings are per machine).
+
+It adds:
+
+- The **Ubuntu 26.04 LTS** profile, starting in `~`, with Catppuccin Mocha, JetBrainsMono Nerd Font 13 and no scrollbar
+- The Catppuccin Mocha colour scheme
+- Hides the duplicate `Ubuntu-26.04` profile that WSL generates
+
+To change the profile, edit the fragment in this repo and re-run `./install` (or `./install.wt`), changes made in the Windows Terminal settings UI go to the machine's `settings.json` instead and are not tracked. To make it the default profile: Settings → Startup → Default profile.
 
 ## Testing changes safely
 

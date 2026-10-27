@@ -72,6 +72,10 @@
     - command: ./install.gh
       stdin: true
       stdout: true
+    # Windows Terminal profile and colour scheme
+    - command: ./install.wt
+      stdin: true
+      stdout: true
     # AI coding CLIs, both install into ~/.local/bin
     - command: "[ -x ~/.local/bin/claude ] || curl -fsSL https://claude.ai/install.sh | bash"
       stdin: true
