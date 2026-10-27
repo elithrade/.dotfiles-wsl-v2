@@ -10,7 +10,11 @@ fi
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "${TMP_DIR}"' EXIT
 
-LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-curl -Lo "${TMP_DIR}/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*') || true
+if [ -z "${LAZYGIT_VERSION}" ]; then
+  echo "Could not get the latest lazygit version from api.github.com (blocked or rate limited)" >&2
+  exit 1
+fi
+curl -fLo "${TMP_DIR}/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
 tar xf "${TMP_DIR}/lazygit.tar.gz" -C "${TMP_DIR}" lazygit
 sudo install "${TMP_DIR}/lazygit" /usr/local/bin
