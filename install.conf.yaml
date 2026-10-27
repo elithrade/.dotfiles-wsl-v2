@@ -16,6 +16,10 @@
 
 - shell:
     - git submodule update --init --recursive
+    # Git identity and defaults, only set when missing so per-machine changes are kept
+    - git config --global user.name >/dev/null || git config --global user.name "Bin Hu"
+    - git config --global user.email >/dev/null || git config --global user.email "elithrade@gmail.com"
+    - git config --global init.defaultBranch >/dev/null || git config --global init.defaultBranch main
     - command: sudo apt update
       stdin: true
       stdout: true
