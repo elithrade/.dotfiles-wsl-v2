@@ -8,6 +8,9 @@ end
 
 local timeout = 30 * 60 * 1000
 
+-- A Lua error in a -c luafile leaves headless nvim running forever, so fail instead
+local function run()
+
 -- Plugins, pinned to lazy-lock.json
 log("lazy: restoring plugins")
 vim.cmd("Lazy! restore")
@@ -68,4 +71,11 @@ local parsers = LazyVim.opts("nvim-treesitter").ensure_installed or {}
 require("nvim-treesitter").install(parsers, { summary = true }):wait(timeout)
 log("treesitter parsers: " .. table.concat(require("nvim-treesitter").get_installed(), ", "))
 
+end
+
+local ok, err = xpcall(run, debug.traceback)
+if not ok then
+  log("install failed: " .. tostring(err))
+  vim.cmd("cq")
+end
 vim.cmd("qa!")
