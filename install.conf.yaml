@@ -8,50 +8,55 @@
 
 - link:
     ~/.zshrc: zshrc
+    ~/.zsh_plugins.txt: zsh_plugins.txt
     ~/.aliases.sh: aliases.sh
     ~/.history.zsh: history.zsh
     ~/.tmux.conf: tmux.conf
 
 - shell:
     - git submodule update --init --recursive
-    # Install latest Neovim
-    - command: sudo add-apt-repository ppa:neovim-ppa/unstable -y
-      stdin: true
-      stdout: true
     - command: sudo apt update
       stdin: true
       stdout: true
-    - command: sudo apt upgrade
+    - command: sudo apt upgrade -y
       stdin: true
       stdout: true
-    - command: sudo apt install make cmake gcc ripgrep unzip xclip neovim
+    - command: sudo apt install -y make cmake gcc ripgrep unzip xclip
+      stdin: true
+      stdout: true
+    # Neovim via bob (version manager)
+    - command: ./install.bob
       stdin: true
       stdout: true
     # Neovim configs
-    - command: git clone git@github.com:elithrade/nvim-lazy.git ~/.config/nvim
+    - command: "[ -d ~/.config/nvim ] || git clone https://github.com/elithrade/nvim-lazy.git ~/.config/nvim"
       stdin: true
       stdout: true
     # zsh plugin manager
-    - command: curl -L git.io/antigen > ~/antigen.zsh
+    - command: "[ -d ~/.antidote ] || git clone --depth=1 https://github.com/mattmc3/antidote.git ~/.antidote"
       stdin: true
       stdout: true
     # Shell prompt
-    - command: curl -sS https://starship.rs/install.sh | sh
+    - command: command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
       stdin: true
       stdout: true
-    # Install nvm
-    - command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash
+    # Node version manager
+    - command: "[ -d ~/.local/share/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
       stdin: true
       stdout: true
     # Install fzf
-    - command: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all
+    - command: "[ -d ~/.fzf ] || (git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all)"
       stdin: true
       stdout: true
     # Better cd
-    - command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+    - command: command -v zoxide >/dev/null || curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+      stdin: true
+      stdout: true
+    # Git TUI
+    - command: ./install.lazygit
       stdin: true
       stdout: true
     # Tmux plugin manager
-    - command: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    - command: "[ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
       stdin: true
       stdout: true

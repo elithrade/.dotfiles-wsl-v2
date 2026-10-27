@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Install bob (Neovim version manager) and the latest stable Neovim
+
+set -e
+
+BOB_BIN="${HOME}/.local/bin/bob"
+
+if ! command -v bob >/dev/null 2>&1 && [ ! -x "${BOB_BIN}" ]; then
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "${TMP_DIR}"' EXIT
+
+  curl -Lo "${TMP_DIR}/bob.zip" "https://github.com/MordechaiHadad/bob/releases/latest/download/bob-linux-x86_64.zip"
+  unzip -q "${TMP_DIR}/bob.zip" -d "${TMP_DIR}"
+  install -D -m 755 "${TMP_DIR}/bob-linux-x86_64/bob" "${BOB_BIN}"
+fi
+
+"$(command -v bob || echo "${BOB_BIN}")" use stable
