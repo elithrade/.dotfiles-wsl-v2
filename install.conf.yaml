@@ -22,19 +22,15 @@
     - command: sudo apt upgrade -y
       stdin: true
       stdout: true
-    - command: sudo apt install -y make cmake gcc ripgrep unzip xclip chafa
+    - command: sudo apt install -y make cmake gcc ripgrep fd-find unzip xclip chafa dotnet-sdk-10.0
+      stdin: true
+      stdout: true
+    # Ubuntu names the fd binary fdfind
+    - command: mkdir -p ~/.local/bin && ln -sf /usr/bin/fdfind ~/.local/bin/fd
       stdin: true
       stdout: true
     # Neovim via bob (version manager)
     - command: ./install.bob
-      stdin: true
-      stdout: true
-    # Neovim configs (clone over https, push over ssh)
-    - command: "[ -d ~/.config/nvim ] || (git clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git)"
-      stdin: true
-      stdout: true
-    # Install LazyVim plugins, so the first nvim launch is ready to use
-    - command: ~/.local/share/bob/nvim-bin/nvim --headless "+Lazy! restore" +qa
       stdin: true
       stdout: true
     # zsh plugin manager
@@ -47,6 +43,9 @@
       stdout: true
     # Node version manager
     - command: "[ -d ~/.local/share/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
+      stdin: true
+      stdout: true
+    - command: ~/.local/share/fnm/fnm install --lts && ~/.local/share/fnm/fnm default lts-latest
       stdin: true
       stdout: true
     # Install fzf
@@ -67,5 +66,13 @@
       stdout: true
     # Tmux plugins listed in tmux.conf (same as prefix + I)
     - command: ~/.tmux/plugins/tpm/bin/install_plugins
+      stdin: true
+      stdout: true
+    # Neovim configs (clone over https, push over ssh)
+    - command: "[ -d ~/.config/nvim ] || (git clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git)"
+      stdin: true
+      stdout: true
+    # LazyVim plugins, Mason tools and treesitter parsers, so the first nvim launch is ready to use
+    - command: export PATH="$HOME/.local/bin:$PATH" && eval "$(~/.local/share/fnm/fnm env --shell bash)" && ~/.local/share/bob/nvim-bin/nvim --headless -c "luafile install.nvim.lua"
       stdin: true
       stdout: true

@@ -10,12 +10,10 @@ All Neovim configs are now managed by [nvim-lazy-v2](https://github.com/elithrad
 - Clone the repo and `cd ~/.dotfiles-wsl-v2/`
 - `./install` (safe to re-run, already installed tools are skipped)
 - `tmux` plugins are installed by `./install` (or manually with `prefix + shift + i`)
-- `fnm install --lts` to install the latest node LTS
-- `fnm default lts-latest`
 - Restart WSL
 
 ## Tools
 
 - zsh plugins are managed by [antidote](https://github.com/mattmc3/antidote), listed in `zsh_plugins.txt`
 - Neovim versions are managed by [bob](https://github.com/MordechaiHadad/bob), e.g. `bob use nightly`
-- Node versions are managed by [fnm](https://github.com/Schniz/fnm)
+- Node versions are managed by [fnm](https://github.com/Schniz/fnm), `./install` installs the latest LTS
