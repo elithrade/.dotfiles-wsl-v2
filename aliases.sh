@@ -21,7 +21,7 @@ alias gss="git stash push -m"
 alias gsp="git stash pop"
 alias gpof="git push --force-with-lease origin"
 alias lg="lazygit"
-alias gs="git switch"
+alias gsw="git switch"
 
 # Files
 alias l="ls -o -hX --group-directories-first"
