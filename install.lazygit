@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+# Install lazygit from its GitHub release.
+# With DOTFILES_UPDATE set, also replace an installed lazygit that is older than the latest release.
+
 set -e
 
-if command -v lazygit >/dev/null 2>&1; then
+if command -v lazygit >/dev/null 2>&1 && [ -z "${DOTFILES_UPDATE}" ]; then
   echo "lazygit already installed: $(lazygit --version)"
   exit 0
 fi
@@ -15,6 +18,16 @@ if [ -z "${LAZYGIT_VERSION}" ]; then
   echo "Could not get the latest lazygit version from api.github.com (blocked or rate limited)" >&2
   exit 1
 fi
+
+if command -v lazygit >/dev/null 2>&1; then
+  INSTALLED="$(lazygit --version | grep -Po 'version=\K[^,]*')"
+  if [ "${INSTALLED}" = "${LAZYGIT_VERSION}" ]; then
+    echo "lazygit ${INSTALLED} is up to date"
+    exit 0
+  fi
+  echo "lazygit: updating ${INSTALLED} to ${LAZYGIT_VERSION}"
+fi
+
 curl -fLo "${TMP_DIR}/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
 tar xf "${TMP_DIR}/lazygit.tar.gz" -C "${TMP_DIR}" lazygit
 sudo install "${TMP_DIR}/lazygit" /usr/local/bin

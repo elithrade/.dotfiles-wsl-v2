@@ -37,6 +37,18 @@ Neovim configs live in a separate repo, [nvim-lazy-v2](https://github.com/elithr
 
 `./install` is safe to re-run at any time. Already installed tools and existing clones are skipped, so re-running after pulling changes only applies what is new.
 
+## Update tools
+
+```sh
+./install --update
+```
+
+Runs the normal install, and also upgrades what is already installed: apt packages (gh included), csharpier, bob and the stable Neovim, antidote and the zsh plugins, starship, fnm, fzf, zoxide, lazygit, Claude Code, Copilot CLI, tpm and the tmux plugins, outdated Mason tools and treesitter parsers. It pulls `~/.config/nvim` (fast-forward only, it warns and carries on if that fails) and restores plugins from its `lazy-lock.json`.
+
+Neovim plugins are not updated past the lockfile. Update them with `:Lazy update` in nvim and commit `lazy-lock.json` in nvim-lazy-v2, then other machines pick them up with `./install --update`.
+
+Node LTS is updated by a plain `./install` too. Older Node versions stay installed, remove them with `fnm uninstall <version>`.
+
 ## Work machine
 
 Same steps as [a new machine](#set-up-a-new-machine), in a fresh distro next to the existing work one (which stays untouched), with these differences:
@@ -76,6 +88,8 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - Windows Terminal fragment (see [Windows Terminal](#windows-terminal))
 - tpm and the tmux plugins listed in `tmux.conf`
 - Neovim config (plugin data from a different nvim config is moved aside first), then `install.nvim.lua` runs headless nvim to install plugins (pinned by `lazy-lock.json`), Mason tools and treesitter parsers
+
+With `--update`, the `install` wrapper exports `DOTFILES_UPDATE=1` and each step that skips an installed tool upgrades it instead (see [Update tools](#update-tools)).
 
 ## Files
 

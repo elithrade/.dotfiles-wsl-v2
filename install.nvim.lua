@@ -1,5 +1,7 @@
 -- Headless setup for the LazyVim config: plugins, Mason tools and treesitter parsers.
 -- Usage: nvim --headless -c "luafile install.nvim.lua"
+-- With DOTFILES_UPDATE set, also updates outdated Mason tools and treesitter parsers.
+-- Plugins always follow lazy-lock.json, update them with :Lazy update and commit the lockfile in nvim-lazy-v2.
 
 local function log(msg)
   io.stdout:write(msg .. "\n")
@@ -7,6 +9,7 @@ local function log(msg)
 end
 
 local timeout = 30 * 60 * 1000
+local update = (vim.env.DOTFILES_UPDATE or "") ~= ""
 
 -- A Lua error in a -c luafile leaves headless nvim running forever, so fail instead
 local function run()
@@ -35,6 +38,17 @@ local function run()
 
   -- mason-lspconfig skips its ensure_installed in headless mode, so run it ourselves
   require("mason-lspconfig.features.ensure_installed")()
+
+  if update then
+    for _, p in ipairs(mr.get_installed_packages()) do
+      local installed = p:get_installed_version()
+      local ok, latest = pcall(p.get_latest_version, p)
+      if ok and installed ~= latest and not p:is_installing() then
+        log(("mason: updating %s %s -> %s"):format(p.name, installed or "?", latest))
+        p:install()
+      end
+    end
+  end
 
   local function installing()
     local names = {}
@@ -68,6 +82,10 @@ local function run()
   require("lazy").load({ plugins = { "nvim-treesitter" } })
   local parsers = LazyVim.opts("nvim-treesitter").ensure_installed or {}
   require("nvim-treesitter").install(parsers, { summary = true }):wait(timeout)
+  if update then
+    log("treesitter: updating parsers")
+    require("nvim-treesitter").update(nil, { summary = true }):wait(timeout)
+  end
   log("treesitter parsers: " .. table.concat(require("nvim-treesitter").get_installed(), ", "))
 end
 

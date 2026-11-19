@@ -16,6 +16,7 @@ Dotfiles and a one-shot installer for a WSL (Ubuntu 26.04) dev environment: zsh,
 ## Rules for installer changes
 
 - **`./install` must stay safe to re-run** after a partial failure, on a machine that has an older setup, or behind a work proxy. Every step checks that its work is *finished* (a binary or marker file exists), not merely that a folder exists.
+- `./install --update` exports `DOTFILES_UPDATE=1` (the wrapper strips the flag before calling dotbot). A step that skips an installed tool should upgrade it when that variable is set, and still skip without it. Steps run under `$SHELL` (zsh), so test one-liners with `zsh -c`.
 - New git clones go through `install.clone <url> <dir> <marker-file> [git clone options]`. It skips when the marker exists and origin matches (https and ssh forms count as the same), otherwise moves the folder to `<dir>.bak.<timestamp>` and clones again. Never `rm -rf` user data; move it aside.
 - Plugin data in `~/.local/share/nvim` from a different nvim config gets pinned into `lazy-lock.json` (lazy.nvim writes every installed plugin's commit after any install), which is why `install.conf.yaml` moves it aside when `~/.config/nvim` isn't nvim-lazy-v2.
 - A Lua error in `nvim --headless -c "luafile ..."` doesn't exit nvim and looks like a hang; keep `install.nvim.lua`'s `xpcall` wrapper and `cq` on failure.

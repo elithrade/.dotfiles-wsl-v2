@@ -33,8 +33,9 @@
     - command: mkdir -p ~/.local/bin && ln -sf /usr/bin/fdfind ~/.local/bin/fd
       stdin: true
       stdout: true
+    # Steps below skip tools that are already installed, unless ./install --update set DOTFILES_UPDATE
     # C# formatter, used by conform.nvim from ~/.dotnet/tools
-    - command: dotnet tool list -g | grep -q "^csharpier " || dotnet tool install -g csharpier
+    - command: 'if ! dotnet tool list -g | grep -q "^csharpier "; then dotnet tool install -g csharpier; elif [ -n "$DOTFILES_UPDATE" ]; then dotnet tool update -g csharpier; fi'
       stdin: true
       stdout: true
     # Neovim via bob (version manager)
@@ -45,30 +46,35 @@
     - command: ./install.clone https://github.com/mattmc3/antidote.git ~/.antidote antidote.zsh --depth=1
       stdin: true
       stdout: true
-    # Shell prompt
-    - command: command -v starship >/dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
+    # antidote itself and the plugins in zsh_plugins.txt
+    - command: '[ -z "$DOTFILES_UPDATE" ] || zsh -c "source ~/.antidote/antidote.zsh && antidote update"'
       stdin: true
       stdout: true
-    # Node version manager
-    - command: "[ -x ~/.local/share/fnm/fnm ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell"
+    # Shell prompt (the install script replaces an existing binary)
+    - command: 'command -v starship >/dev/null && [ -z "$DOTFILES_UPDATE" ] || curl -fsS https://starship.rs/install.sh | sh -s -- -y'
       stdin: true
       stdout: true
+    # Node version manager (the install script replaces an existing binary)
+    - command: '[ -x ~/.local/share/fnm/fnm ] && [ -z "$DOTFILES_UPDATE" ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell'
+      stdin: true
+      stdout: true
+    # Installs a newer LTS when there is one, also without --update
     - command: ~/.local/share/fnm/fnm install --lts && ~/.local/share/fnm/fnm default lts-latest
       stdin: true
       stdout: true
-    # Install fzf
-    - command: "[ -x ~/.fzf/bin/fzf ] || (./install.clone https://github.com/junegunn/fzf.git ~/.fzf install --depth 1 && ~/.fzf/install --all)"
+    # Install fzf (--bin on update downloads the binary matching the pulled scripts, without touching ~/.zshrc)
+    - command: 'if [ ! -x ~/.fzf/bin/fzf ]; then ./install.clone https://github.com/junegunn/fzf.git ~/.fzf install --depth 1 && ~/.fzf/install --all; elif [ -n "$DOTFILES_UPDATE" ]; then git -C ~/.fzf pull --ff-only && ~/.fzf/install --bin; fi'
       stdin: true
       stdout: true
-    # Better cd
-    - command: command -v zoxide >/dev/null || curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+    # Better cd (the install script replaces an existing binary)
+    - command: 'command -v zoxide >/dev/null && [ -z "$DOTFILES_UPDATE" ] || curl -fsS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash'
       stdin: true
       stdout: true
     # Git TUI
     - command: ./install.lazygit
       stdin: true
       stdout: true
-    # GitHub CLI
+    # GitHub CLI (updated by apt upgrade above)
     - command: ./install.gh
       stdin: true
       stdout: true
@@ -77,18 +83,18 @@
       stdin: true
       stdout: true
     # AI coding CLIs, both install into ~/.local/bin
-    - command: "[ -x ~/.local/bin/claude ] || curl -fsSL https://claude.ai/install.sh | bash"
+    - command: 'if [ ! -x ~/.local/bin/claude ]; then curl -fsSL https://claude.ai/install.sh | bash; elif [ -n "$DOTFILES_UPDATE" ]; then ~/.local/bin/claude update; fi'
       stdin: true
       stdout: true
-    - command: "[ -x ~/.local/bin/copilot ] || curl -fsSL https://gh.io/copilot-install | bash"
+    - command: 'if [ ! -x ~/.local/bin/copilot ]; then curl -fsSL https://gh.io/copilot-install | bash; elif [ -n "$DOTFILES_UPDATE" ]; then ~/.local/bin/copilot update; fi'
       stdin: true
       stdout: true
     # Tmux plugin manager
     - command: ./install.clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm bin/install_plugins
       stdin: true
       stdout: true
-    # Tmux plugins listed in tmux.conf (same as prefix + I)
-    - command: ~/.tmux/plugins/tpm/bin/install_plugins
+    # Tmux plugins listed in tmux.conf (same as prefix + I, and prefix + U on update, tpm is one of them)
+    - command: '~/.tmux/plugins/tpm/bin/install_plugins && { [ -z "$DOTFILES_UPDATE" ] || ~/.tmux/plugins/tpm/bin/update_plugins all; }'
       stdin: true
       stdout: true
     # Plugin data from another nvim config would be written into this config's lazy-lock.json, so move it aside first
@@ -99,7 +105,12 @@
     - command: ./install.clone https://github.com/elithrade/nvim-lazy-v2.git ~/.config/nvim init.lua && git -C ~/.config/nvim remote set-url --push origin git@github.com:elithrade/nvim-lazy-v2.git
       stdin: true
       stdout: true
+    # On update, pull the nvim config so plugins follow the latest committed lazy-lock.json (local commits or changes only warn)
+    - command: '[ -z "$DOTFILES_UPDATE" ] || git -C ~/.config/nvim pull --ff-only || echo "warning: could not fast-forward ~/.config/nvim, plugins stay on its current lazy-lock.json"'
+      stdin: true
+      stdout: true
     # LazyVim plugins, Mason tools and treesitter parsers, so the first nvim launch is ready to use
+    # (on update, also outdated Mason tools and treesitter parsers)
     - command: export PATH="$HOME/.local/bin:$PATH" && eval "$(~/.local/share/fnm/fnm env --shell bash)" && ~/.local/share/bob/nvim-bin/nvim --headless -c "luafile install.nvim.lua"
       stdin: true
       stdout: true

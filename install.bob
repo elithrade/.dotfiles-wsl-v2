@@ -1,18 +1,31 @@
 #!/usr/bin/env bash
 
-# Install bob (Neovim version manager) and the latest stable Neovim
+# Install bob (Neovim version manager) and the latest stable Neovim.
+# With DOTFILES_UPDATE set, also update bob and the stable Neovim.
 
 set -e
 
 BOB_BIN="${HOME}/.local/bin/bob"
 
-if ! command -v bob >/dev/null 2>&1 && [ ! -x "${BOB_BIN}" ]; then
+download_bob() {
   TMP_DIR="$(mktemp -d)"
   trap 'rm -rf "${TMP_DIR}"' EXIT
 
-  curl -Lo "${TMP_DIR}/bob.zip" "https://github.com/MordechaiHadad/bob/releases/latest/download/bob-linux-x86_64.zip"
+  curl -fLo "${TMP_DIR}/bob.zip" "https://github.com/MordechaiHadad/bob/releases/latest/download/bob-linux-x86_64.zip"
   unzip -q "${TMP_DIR}/bob.zip" -d "${TMP_DIR}"
   install -D -m 755 "${TMP_DIR}/bob-linux-x86_64/bob" "${BOB_BIN}"
+}
+
+if ! command -v bob >/dev/null 2>&1 && [ ! -x "${BOB_BIN}" ]; then
+  download_bob
+elif [ -n "${DOTFILES_UPDATE}" ] && [ -x "${BOB_BIN}" ]; then
+  # bob has no self-update, so download the latest release over it
+  echo "bob: updating from $("${BOB_BIN}" --version)"
+  download_bob
 fi
 
-"$(command -v bob || echo "${BOB_BIN}")" use stable
+BOB="$(command -v bob || echo "${BOB_BIN}")"
+"${BOB}" use stable
+if [ -n "${DOTFILES_UPDATE}" ]; then
+  "${BOB}" update stable
+fi
