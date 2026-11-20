@@ -47,7 +47,7 @@ Runs the normal install, and also upgrades what is already installed: apt packag
 
 Neovim plugins are not updated past the lockfile. Update them with `:Lazy update` in nvim and commit `lazy-lock.json` in nvim-lazy-v2, then other machines pick them up with `./install --update`.
 
-Node LTS is updated by a plain `./install` too. Older Node versions stay installed, remove them with `fnm uninstall <version>`.
+Node: `--update` installs a newer LTS when there is one, but keeps your default Node version. Switch with `fnm default <version>`. Older versions stay installed, remove them with `fnm uninstall <version>`.
 
 ## Work machine
 
@@ -83,7 +83,7 @@ Defined in `install.conf.yaml`, run by [dotbot](https://github.com/anishathalye/
 - Sets git `user.name`, `user.email` and `init.defaultBranch`, only when missing
 - apt: build tools, ripgrep, fd, unzip, xclip, chafa, .NET 10 SDK, then `fd` → `fdfind` link
 - csharpier as a global dotnet tool (used by conform.nvim for C# formatting)
-- Neovim via bob, antidote, starship, fnm + latest Node LTS, fzf, zoxide, lazygit
+- Neovim via bob, antidote, starship, fnm + latest Node LTS (set as the default only when no default exists), fzf, zoxide, lazygit
 - GitHub CLI (from GitHub's apt repository), Claude Code and GitHub Copilot CLI
 - Windows Terminal fragment (see [Windows Terminal](#windows-terminal))
 - tpm and the tmux plugins listed in `tmux.conf`
@@ -113,7 +113,7 @@ Configs are symlinks into this repo, so editing `~/.zshrc` edits the repo file. 
 
 - zsh plugins: [antidote](https://github.com/mattmc3/antidote), add a line to `zsh_plugins.txt` (`zsh-syntax-highlighting` must stay last)
 - Neovim versions: [bob](https://github.com/MordechaiHadad/bob), e.g. `bob use nightly`, `bob use stable`
-- Node versions: [fnm](https://github.com/Schniz/fnm), same commands as nvm (`fnm install 22`, `fnm use 22`, `fnm default 22`), switches automatically on `cd` into a project with `.nvmrc` / `.node-version`
+- Node versions: [fnm](https://github.com/Schniz/fnm), same commands as nvm (`fnm install 22`, `fnm use 22`, `fnm default 22`), switches automatically on `cd` into a project with `.nvmrc` / `.node-version`, including its subfolders, and back to the default on leaving it
 - tmux plugins: [tpm](https://github.com/tmux-plugins/tpm), add `set -g @plugin '...'` to `tmux.conf` then `prefix + I`
 - Mason tools: add them to `ensure_installed` in the Neovim config, `./install` and LazyVim pick them up from there
 

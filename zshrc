@@ -34,8 +34,8 @@ antidote load
 
 source ~/.history.zsh
 
-# Node version manager, switches version on cd when a .node-version/.nvmrc is present
-command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
+# Node version manager, switches version on cd when a .node-version/.nvmrc is in the folder or a parent
+command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell zsh)"
 
 export EDITOR=nvim
 

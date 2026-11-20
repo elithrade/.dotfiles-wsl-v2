@@ -58,8 +58,9 @@
     - command: '[ -x ~/.local/share/fnm/fnm ] && [ -z "$DOTFILES_UPDATE" ] || curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell'
       stdin: true
       stdout: true
-    # Installs a newer LTS when there is one, also without --update
-    - command: ~/.local/share/fnm/fnm install --lts && ~/.local/share/fnm/fnm default lts-latest
+    # Node LTS. The default is only set when there is none, to the LTS version itself (the lts-latest alias moves on
+    # every LTS install). --update installs a newer LTS but leaves the default alone
+    - command: 'FNM=~/.local/share/fnm/fnm; if ! $FNM default >/dev/null 2>&1; then $FNM install --lts && $FNM default "$($FNM exec --using=lts-latest node --version)"; elif [ -n "$DOTFILES_UPDATE" ]; then $FNM install --lts; fi'
       stdin: true
       stdout: true
     # Install fzf (--bin on update downloads the binary matching the pulled scripts, without touching ~/.zshrc)
